@@ -139,9 +139,11 @@ public:
 
 };
 
-
+/*
 // Perform face detection on the input image, using the given Haar cascade classifier.
 // Returns a rectangle for the detected region in the given image.
+
+
 CvRect FaceRecognitionLib::detectFaceInImage(const IplImage *inputImg, const CvHaarClassifierCascade* cascade )
 {
 	const CvSize minFeatureSize = cvSize(20, 20);
@@ -680,3 +682,4 @@ bool FaceRecognitionLib::retrainOnline(void)
         return(true);
 	
 }
+*/

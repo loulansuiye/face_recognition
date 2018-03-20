@@ -113,20 +113,20 @@ include_directories(
 add_library(face_recognition_lib src/face_recognition_lib.cpp)
 
 ## Declare a cpp executable
-add_executable(Fserver src/face_recognition.cpp)
-add_executable(Fclient src/face_rec_client.cpp)
+#add_executable(Fserver src/face_recognition.cpp)
+#add_executable(Fclient src/face_rec_client.cpp)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 
-add_dependencies(Fclient face_recognition_generate_messages_cpp)
+#add_dependencies(Fclient face_recognition_generate_messages_cpp)
 
-add_dependencies(Fserver ${catkin_EXPORTED_TARGETS})
-add_dependencies(Fclient ${catkin_EXPORTED_TARGETS})
+#add_dependencies(Fserver ${catkin_EXPORTED_TARGETS})
+#add_dependencies(Fclient ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(Fserver ${catkin_LIBRARIES})
-target_link_libraries(Fclient ${catkin_LIBRARIES})
+#target_link_libraries(Fserver ${catkin_LIBRARIES})
+#target_link_libraries(Fclient ${catkin_LIBRARIES})
 
 
 #############
