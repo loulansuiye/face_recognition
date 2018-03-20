@@ -33,6 +33,7 @@
 #include <ros/package.h> //to get pkg path
 
 using namespace std;
+using namespace cv;
 static const char *faceCascadeFilename = "haarcascade_frontalface_alt.xml";   // Haar Cascade file, used for Face Detection.
 const std::string path = ros::package::getPath("face_recognition"); 	//D.Portugal => get pkg path
 //#define USE_MAHALANOBIS_DISTANCE	// You might get better recognition accuracy if you enable this.
@@ -41,15 +42,23 @@ class FaceRecognitionLib
 public:
   // Global variables
   int SAVE_EIGENFACE_IMAGES;// Set to 0 if you don't want images of the Eigenvectors saved to files (for debugging).
-  IplImage ** faceImgArr; // array of face images
+  //IplImage ** faceImgArr; // array of face images
+  Mat faceImgArr; //array of face images
+
   vector<string> personNames;			// array of person names (indexed by the person number). Added by Shervin.
   int faceWidth;	// Default dimensions for faces in the face recognition database. Added by Shervin.
   int faceHeight;	//	"		"		"		"		"		"
   int nPersons; // the number of people in the training set. Added by Shervin.
   int nTrainFaces; // the number of training images
   int nEigens; // the number of eigenvalues
-  IplImage * pAvgTrainImg; // the average image
-  IplImage ** eigenVectArr; // eigenvectors
+  //IplImage * pAvgTrainImg; // the average image
+
+  Mat *pAvgTrainImg;
+
+  //IplImage ** eigenVectArr; // eigenvectors
+  Mat eigenVectArr;
+
+
   CvMat * eigenValMat; // eigenvalues
   CvMat * projectedTrainFaceMat; // projected training faces
   CvHaarClassifierCascade* faceCascade;
@@ -64,11 +73,14 @@ public:
   int  findNearestNeighbor(float * projectedTestFace, float *pConfidence);
   int  loadFaceImgArray(const char * filename);
   void storeEigenfaceImages();
-  IplImage* convertImageToGreyscale(const IplImage *imageSrc);
-  IplImage* cropImage(const IplImage *img, const CvRect region);
-  IplImage* resizeImage(const IplImage *origImg, int newWidth, int newHeight);
-  IplImage* convertFloatImageToUcharImage(const IplImage *srcImg);
-  CvRect detectFaceInImage(const IplImage *inputImg, const CvHaarClassifierCascade* cascade );
+
+
+  Mat convertImageToGreyscale(const Mat& imageSrc);
+  Mat cropImage(const Mat& img, const CvRect region);
+  Mat resizeImage(const Mat& origImg, int newWidth, int newHeight);
+
+  Mat convertFloatImageToUcharImage(const Mat& srcImg);
+  CvRect detectFaceInImage(const Mat& inputImg, const CvHaarClassifierCascade* cascade );
   bool retrainOnline(void);
   FaceRecognitionLib()
   {
@@ -101,8 +113,8 @@ public:
      trainPersonNumMat = 0;
      if( loadTrainingData( &trainPersonNumMat ) ) 
      {
-	faceWidth = pAvgTrainImg->width;
-	faceHeight = pAvgTrainImg->height;
+	faceWidth = pAvgTrainImg->cols;
+	faceHeight = pAvgTrainImg->rows;
         database_updated=true;
      }
      else
@@ -113,6 +125,8 @@ public:
 	
      }
   }
+
+  /*
   ~FaceRecognitionLib(void)
   {
         cvReleaseHaarClassifierCascade( &faceCascade );
@@ -136,7 +150,7 @@ public:
 	if(eigenValMat)  cvReleaseMat( &eigenValMat );
 	if(projectedTrainFaceMat) cvReleaseMat( &projectedTrainFaceMat );
    }
-
+*/
 };
 
 /*
