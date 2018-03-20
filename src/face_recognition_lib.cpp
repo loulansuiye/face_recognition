@@ -25,15 +25,26 @@
 
 */
 
+// Reference for face detection: https://docs.opencv.org/3.0-beta/doc/tutorials/objdetect/cascade_classifier/cascade_classifier.html
+
+// Reference for face recognition C++: https://docs.opencv.org/3.0-beta/modules/face/doc/facerec/tutorial/facerec_video_recognition.html
+
+
 //Headers added by D.Portugal (needed for Catkinization):
-#include <cvaux.h>
-#include <image_transport/image_transport.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <sys/stat.h>
+#include "opencv2/objdetect.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/imgproc.hpp"
+
+#include <iostream>
+#include <stdio.h>
+#include <unistd.h>
+
+#include <ros/ros.h>
 #include <ros/package.h> //to get pkg path
 
 using namespace std;
 using namespace cv;
+
 static const char *faceCascadeFilename = "haarcascade_frontalface_alt.xml";   // Haar Cascade file, used for Face Detection.
 const std::string path = ros::package::getPath("face_recognition"); 	//D.Portugal => get pkg path
 //#define USE_MAHALANOBIS_DISTANCE	// You might get better recognition accuracy if you enable this.
@@ -43,28 +54,30 @@ public:
   // Global variables
   int SAVE_EIGENFACE_IMAGES;// Set to 0 if you don't want images of the Eigenvectors saved to files (for debugging).
   //IplImage ** faceImgArr; // array of face images
-  Mat faceImgArr; //array of face images
+  //Mat faceImgArr; //array of face images
 
-  vector<string> personNames;			// array of person names (indexed by the person number). Added by Shervin.
-  int faceWidth;	// Default dimensions for faces in the face recognition database. Added by Shervin.
-  int faceHeight;	//	"		"		"		"		"		"
-  int nPersons; // the number of people in the training set. Added by Shervin.
-  int nTrainFaces; // the number of training images
-  int nEigens; // the number of eigenvalues
+  //vector<string> personNames;			// array of person names (indexed by the person number). Added by Shervin.
+  //int faceWidth;	// Default dimensions for faces in the face recognition database. Added by Shervin.
+  //int faceHeight;	//	"		"		"		"		"		"
+  //int nPersons; // the number of people in the training set. Added by Shervin.
+  //int nTrainFaces; // the number of training images
+  //int nEigens; // the number of eigenvalues
   //IplImage * pAvgTrainImg; // the average image
 
-  Mat *pAvgTrainImg;
+  //Mat *pAvgTrainImg;
 
   //IplImage ** eigenVectArr; // eigenvectors
-  Mat eigenVectArr;
+  //Mat eigenVectArr;
 
 
-  CvMat * eigenValMat; // eigenvalues
-  CvMat * projectedTrainFaceMat; // projected training faces
-  CvHaarClassifierCascade* faceCascade;
-  CvMat * trainPersonNumMat;  // the person numbers during training
-  bool database_updated;
+  //CvMat * eigenValMat; // eigenvalues
+  //CvMat * projectedTrainFaceMat; // projected training faces
+  CascadeClassifier *faceCascade;
+  //CvMat * trainPersonNumMat;  // the person numbers during training
+  //bool database_updated;
   //Functions:
+
+  /*
   bool learn(const char *szFileTrain);
   void doPCA();
   void storeTrainingData();
@@ -82,8 +95,14 @@ public:
   Mat convertFloatImageToUcharImage(const Mat& srcImg);
   CvRect detectFaceInImage(const Mat& inputImg, const CvHaarClassifierCascade* cascade );
   bool retrainOnline(void);
+
+  */
+
+
   FaceRecognitionLib()
   {
+
+	 /*
      SAVE_EIGENFACE_IMAGES = 1;		
      faceImgArr= 0; 
      faceWidth = 120;
@@ -96,10 +115,22 @@ public:
      eigenValMat           = 0; 
      projectedTrainFaceMat = 0; 
      database_updated = false;
-     
+     */
      /** D.Portugal: needed in case you "rosrun" from another folder **/    
-     chdir(path.c_str());
-     
+
+
+	//Switch into current path of ROS package 
+    chdir(path.c_str());
+
+    if( !faceCascade->load( faceCascadeFilename ) )
+	
+	{ 
+       ROS_INFO("Could not load Haar cascade Face detection classifier in '%s'.", faceCascadeFilename);
+		
+	   exit(1);
+	};
+
+     /*
      // Load the HaarCascade classifier for face detection.
      faceCascade = (CvHaarClassifierCascade*)cvLoad(faceCascadeFilename, 0, 0, 0 );
      if( !faceCascade ) 
@@ -115,7 +146,7 @@ public:
      {
 	faceWidth = pAvgTrainImg->cols;
 	faceHeight = pAvgTrainImg->rows;
-        database_updated=true;
+    database_updated=true;
      }
      else
      {
@@ -125,6 +156,8 @@ public:
 	
      }
   }
+
+  */
 
   /*
   ~FaceRecognitionLib(void)
@@ -149,8 +182,10 @@ public:
 	if(pAvgTrainImg) cvReleaseImage( &pAvgTrainImg ); 	
 	if(eigenValMat)  cvReleaseMat( &eigenValMat );
 	if(projectedTrainFaceMat) cvReleaseMat( &projectedTrainFaceMat );
+
+	*/
    }
-*/
+
 };
 
 /*
